@@ -1,0 +1,48 @@
+{
+  "manifest_version": 3,
+  "name": "Bale E2EE Hermes Guard",
+  "version": "12.14.0",
+  "description": "Transparent Bale Web E2EE with retry-safe split-DOM text decryption, direct GetNasimFileUrls media interception, secure Telegram-like attachment cards, explicit media viewer, compact E2/E2C text, Markdown rendering, and masked metadata.",
+  "icons": {
+    "48": "icon.png"
+  },
+  "permissions": [
+    "storage"
+  ],
+  "host_permissions": [
+    "https://web.bale.ai/*",
+    "https://*.ble.ir/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "https://web.bale.ai/*"
+      ],
+      "js": [
+        "page-hook.js"
+      ],
+      "run_at": "document_start",
+      "world": "MAIN"
+    },
+    {
+      "matches": [
+        "https://web.bale.ai/*"
+      ],
+      "js": [
+        "content.js"
+      ],
+      "run_at": "document_start",
+      "world": "ISOLATED"
+    }
+  ],
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "bale-e2ee@notmmd.local",
+      "strict_min_version": "128.0"
+    }
+  },
+  "action": {
+    "default_title": "Bale E2EE",
+    "default_popup": "popup.html"
+  }
+}

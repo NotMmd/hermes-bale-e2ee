@@ -1,0 +1,22 @@
+__pycache__/
+*.py[cod]
+*$py.class
+.DS_Store
+*.tmp
+*.log
+.env
+.env.*
+*.session
+*.session-journal
+*.key
+state.json
+venv/
+.venv/
+
+# Excluded assets
+bale-decrypted.png
+bale-encrypted.png
+bale-side-by-side.png
+assets/bale-decrypted.png
+assets/bale-encrypted.png
+assets/bale-side-by-side.png
