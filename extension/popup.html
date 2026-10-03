@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Bale E2EE</title>
+  <style>
+    :root {
+      color-scheme: dark light;
+      --bg: #101214;
+      --panel: #171a1e;
+      --panel-2: #1d2126;
+      --text: #f5f7f8;
+      --muted: #98a2ad;
+      --line: rgba(255,255,255,.09);
+      --accent: #19b99a;
+      --accent-2: #11967e;
+      --danger: #e45d64;
+      --shadow: 0 16px 50px rgba(0,0,0,.35);
+    }
+    @media (prefers-color-scheme: light) {
+      :root {
+        --bg: #f4f6f8;
+        --panel: #ffffff;
+        --panel-2: #f5f7f8;
+        --text: #15191d;
+        --muted: #68727e;
+        --line: rgba(15,23,42,.10);
+        --shadow: 0 14px 40px rgba(15,23,42,.12);
+      }
+    }
+    * { box-sizing: border-box; }
+    body {
+      width: 336px;
+      margin: 0;
+      padding: 12px;
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Arial, sans-serif;
+    }
+    .card {
+      border: 1px solid var(--line);
+      background: var(--panel);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      padding: 15px 15px 13px;
+      border-bottom: 1px solid var(--line);
+    }
+    .brand-icon {
+      width: 38px;
+      height: 38px;
+      display: grid;
+      place-items: center;
+      border-radius: 12px;
+      background: color-mix(in srgb, var(--accent) 16%, transparent);
+      color: var(--accent);
+      flex: 0 0 auto;
+    }
+    .brand-icon svg { width: 22px; height: 22px; }
+    .title-wrap { min-width: 0; flex: 1; }
+    .title { font-size: 15px; font-weight: 750; letter-spacing: -.01em; }
+    .subtitle { margin-top: 2px; color: var(--muted); font-size: 11px; direction: ltr; text-align: right; }
+    .state {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 8px;
+      border-radius: 999px;
+      background: var(--panel-2);
+      color: var(--muted);
+      font-size: 10px;
+      white-space: nowrap;
+    }
+    .state-dot { width: 7px; height: 7px; border-radius: 50%; background: #69727c; }
+    .state.active { color: var(--accent); }
+    .state.active .state-dot { background: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 15%, transparent); }
+    .body { padding: 15px; }
+    label { display: block; margin-bottom: 7px; color: var(--muted); font-size: 11px; }
+    .field {
+      display: flex;
+      align-items: center;
+      direction: ltr;
+      background: var(--panel-2);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      overflow: hidden;
+      transition: border-color .16s, box-shadow .16s;
+    }
+    .field:focus-within { border-color: color-mix(in srgb, var(--accent) 65%, transparent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 12%, transparent); }
+    input {
+      flex: 1;
+      min-width: 0;
+      border: 0;
+      outline: 0;
+      background: transparent;
+      color: var(--text);
+      padding: 11px 12px;
+      font: 500 13px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    }
+    .icon-btn {
+      width: 40px;
+      height: 40px;
+      display: grid;
+      place-items: center;
+      border: 0;
+      border-inline-start: 1px solid var(--line);
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+    }
+    .icon-btn:hover { color: var(--text); background: color-mix(in srgb, var(--text) 5%, transparent); }
+    .icon-btn svg { width: 18px; height: 18px; }
+    .meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      min-height: 31px;
+      padding: 9px 2px 0;
+      color: var(--muted);
+      font-size: 10px;
+    }
+    .fingerprint { direction: ltr; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; color: var(--text); opacity: .78; }
+    .actions { display: grid; grid-template-columns: 1fr auto; gap: 8px; margin-top: 12px; }
+    button.primary, button.secondary {
+      height: 39px;
+      border-radius: 11px;
+      border: 1px solid transparent;
+      cursor: pointer;
+      font: 650 12px inherit;
+    }
+    button.primary { background: var(--accent); color: #051b16; padding: 0 15px; }
+    button.primary:hover { background: var(--accent-2); color: white; }
+    button.secondary { width: 42px; background: transparent; border-color: var(--line); color: var(--muted); display: grid; place-items: center; }
+    button.secondary:hover { color: var(--danger); border-color: color-mix(in srgb, var(--danger) 45%, transparent); }
+    button.secondary svg { width: 17px; height: 17px; }
+    .notice {
+      display: none;
+      margin-top: 10px;
+      padding: 8px 10px;
+      border-radius: 10px;
+      font-size: 10px;
+      color: var(--muted);
+      background: var(--panel-2);
+      border: 1px solid var(--line);
+    }
+    .notice.ok { display: block; color: var(--accent); }
+    .notice.error { display: block; color: var(--danger); }
+    .foot {
+      padding: 10px 15px 13px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 9.5px;
+      line-height: 1.6;
+    }
+  </style>
+</head>
+<body>
+  <section class="card">
+    <header class="header">
+      <div class="brand-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 3.4 19 6v5.4c0 4.2-2.7 7.4-7 9.2-4.3-1.8-7-5-7-9.2V6l7-2.6Z"/>
+          <path d="M9.3 11V9.3a2.7 2.7 0 0 1 5.4 0V11m-6.2 0h7v5h-7z"/>
+        </svg>
+      </div>
+      <div class="title-wrap">
+        <div class="title">Bale E2EE</div>
+        <div class="subtitle">AES-256-GCM · BEE3FILE</div>
+      </div>
+      <div id="state" class="state"><span class="state-dot"></span><span id="stateText">بدون کلید</span></div>
+    </header>
+
+    <div class="body">
+      <label for="passphrase">Passphrase مشترک</label>
+      <div class="field">
+        <input id="passphrase" type="password" autocomplete="new-password" spellcheck="false" placeholder="Enter passphrase">
+        <button id="toggleVisibility" class="icon-btn" type="button" aria-label="نمایش رمز" title="نمایش رمز">
+          <svg id="eyeOpen" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 12s3.4-6 9.5-6 9.5 6 9.5 6-3.4 6-9.5 6-9.5-6-9.5-6Z"/><circle cx="12" cy="12" r="2.6"/></svg>
+          <svg id="eyeClosed" hidden viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m3 3 18 18M10.6 6.2A10.8 10.8 0 0 1 12 6c6.1 0 9.5 6 9.5 6a13.8 13.8 0 0 1-2.6 3.4M6.4 6.4C3.8 8.1 2.5 12 2.5 12s3.4 6 9.5 6c1.7 0 3.1-.4 4.4-1"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg>
+        </button>
+      </div>
+      <div class="meta"><span>Key ID</span><span id="fingerprint" class="fingerprint">—</span></div>
+
+      <div class="actions">
+        <button id="saveBtn" class="primary" type="button">ذخیره و اعمال</button>
+        <button id="clearBtn" class="secondary" type="button" aria-label="پاک کردن کلید" title="پاک کردن کلید">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M9 7V4h6v3m-8 0 1 13h8l1-13M10 11v5m4-5v5"/></svg>
+        </button>
+      </div>
+      <div id="notice" class="notice" role="status"></div>
+    </div>
+
+    <footer class="foot">کلید فقط در storage محلی افزونه نگهداری می‌شود. برای ارتباط با Hermes باید Passphrase دو سمت دقیقا یکسان باشد.</footer>
+  </section>
+  <script src="popup.js"></script>
+</body>
+</html>
